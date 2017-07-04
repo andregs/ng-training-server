@@ -1,7 +1,7 @@
 {
   "name": "ng-training-server",
   "version": "0.0.1",
-  "description": "In-memory REST server for my ng-training",
+  "description": "In-memory REST server for my ng-training course",
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc -w",
