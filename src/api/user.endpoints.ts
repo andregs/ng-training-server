@@ -7,11 +7,19 @@ let id = 0;
 const data = [
   new User({
     id: ++id,
-    email: 'admin@example.com',
-    firstName: 'Joe',
-    lastName: 'Admin',
-    birthdate: new Date(1990, 0, 1),
-    admin: true
+    email: 'stanley@example.com',
+    firstName: 'Stanley',
+    lastName: 'Ipkiss',
+    birthdate: new Date(1980, 0, 1),
+    admin: true,
+  }),
+  new User({
+    id: ++id,
+    email: 'kevin@example.com',
+    firstName: 'Kevin',
+    lastName: 'McCallister',
+    birthdate: new Date(1995, 11, 25),
+    admin: false,
   }),
 ];
 
