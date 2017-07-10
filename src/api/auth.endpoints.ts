@@ -1,24 +1,33 @@
 import { Express, Request, Response } from 'express';
-import { Deserialize } from 'cerialize';
+import { Deserialize, Serialize } from 'cerialize';
 import { User } from '../model';
-
-let authenticated: User | null = null;
+import { login, logout, authenticated } from './user.endpoints';
 
 export function authEndpoints(express: Express): void {
 
   express.route(`/api/login`)
     .post((req: Request, res: Response) => {
-      const result = Deserialize(req.body, User);
-      authenticated = result;
-      console.log('Authenticated:', authenticated);
+      const user = Deserialize(req.body, User);
+      login(user);
+      console.log('Authenticated:', user);
       res.sendStatus(204);
     });
 
   express.route(`/api/logout`)
     .get((_, res: Response) => {
-      authenticated = null;
+      logout();
       console.log('Bye!');
       res.sendStatus(204);
+    });
+
+  express.route(`/api/authenticated`)
+    .get((_, res: Response) => {
+      const user = authenticated();
+      if (user) {
+        res.send(Serialize(user));
+      } else {
+        res.sendStatus(401);
+      }
     });
 
 }

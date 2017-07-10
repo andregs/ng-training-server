@@ -7,6 +7,7 @@ export class User {
   @a lastName: string;
   @aas(Date) birthdate: Date;
   @a admin = false;
+  @a authenticated: boolean;
 
   constructor(data?: Partial<User>) {
     Object.assign(this, data);
