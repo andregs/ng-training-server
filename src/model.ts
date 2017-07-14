@@ -29,7 +29,7 @@ export class Product {
 export class Category {
   @a id: number;
   @a name: string;
-  @aas(Product) products: Product[];
+  @aas(Product) products: Product[] = [];
 
   constructor(data?: Partial<Category>) {
     Object.assign(this, data);

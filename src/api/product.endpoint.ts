@@ -14,14 +14,14 @@ let data = [
         categoryId,
         id: ++productId,
         name: 'Red Dead Redemption',
-        color: 'red',
+        color: 'Red',
         price: 25.5,
       }),
       new Product({
         categoryId,
         id: ++productId,
         name: 'Machinarium',
-        color: 'brown',
+        color: 'Brown',
         price: 12.25,
       }),
     ],
@@ -34,14 +34,14 @@ let data = [
         categoryId,
         id: ++productId,
         name: 'Neuromancer',
-        color: 'blue',
+        color: 'Blue',
         price: 17.43,
       }),
       new Product({
         categoryId,
         id: ++productId,
         name: 'What If?',
-        color: 'limegreen',
+        color: 'LimeGreen',
         price: 14,
       }),
     ],
@@ -71,7 +71,7 @@ export function productEndpoints(express: Express): void {
       } else {
         newRecord.id = ++categoryId;
         data.push(newRecord);
-        res.setHeader('Location', `${req.url}/${categoryId}`);
+        res.setHeader('Location', `${req.baseUrl}/${categoryId}`);
         res.sendStatus(201); // created
         console.log('Created:', JSON.stringify(newRecord, null, 2));
       }
@@ -93,7 +93,7 @@ export function productEndpoints(express: Express): void {
       if (result.length < data.length) {
         data = result;
         res.sendStatus(204);
-        console.log('Deleted:', JSON.stringify(result, null, 2));
+        console.log('Category Deleted:', req.params.categoryId);
       } else {
         res.sendStatus(404);
       }
@@ -126,11 +126,38 @@ export function productEndpoints(express: Express): void {
         res.sendStatus(409);
       } else {
         newRecord.id = ++productId;
+        newRecord.categoryId = category.id;
         category.products.push(newRecord);
-        res.setHeader('Location', `${req.url}/${productId}`);
+        res.setHeader('Location', `${req.baseUrl}/${productId}`);
         res.sendStatus(201); // created
         console.log('Created:', JSON.stringify(newRecord, null, 2));
       }
+    });
+
+  productRouter.route('/:productId')
+    .delete((req: Request, res: Response) => {
+      const category = data.find(c => c.id === + req.params.categoryId);
+      if (! category) return res.sendStatus(404);
+      const result = category.products.filter(r => r.id !== + req.params.productId);
+      if (result.length < category.products.length) {
+        category.products = result;
+        res.sendStatus(204);
+        console.log('Product Deleted:', req.params.productId);
+      } else {
+        res.sendStatus(404);
+      }
+    })
+    .put((req: Request, res: Response) => {
+      const product = Deserialize(req.body, Product) as Product;
+      data.forEach(category => {
+        category.products = category.products.filter(p => p.id !== product.id);
+      });
+      const category = data.find(c => c.id === + req.params.categoryId);
+      if (!category) return res.sendStatus(404);
+      product.categoryId = category.id;
+      category.products.push(product);
+      res.sendStatus(204);
+      console.log('Updated:', JSON.stringify(product, null, 2));
     });
 
   express.use(categoryBaseUrl, categoryRouter);
